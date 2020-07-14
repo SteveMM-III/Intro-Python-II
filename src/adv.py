@@ -8,23 +8,30 @@ room = {
                       "North of you, the cave mouth beckons" ),
 
     'foyer':    Room( "Foyer",
-                      """Dim light filters in from the south.
-                      Dusty passages run north and east.""" ),
+                      ''.join(
+                          ( "Dim light filters in from the south. Dusty passages\n"
+                            "run north and east." )
+                        ) ),
 
     'overlook': Room( "Grand Overlook",
-                      """A steep cliff appears before you,
-                      falling into the darkness.
-                      Ahead to the north, a light flickers in
-                      the distance, but there is no way across the chasm.""" ),
+                      ''.join(
+                          ( "A steep cliff appears before you, falling into the\n",
+                            "darkness. Ahead to the north, a light flickers in\n",
+                            "the distance, but there is no way across the chasm." )
+                        ) ),
 
     'narrow':   Room( "Narrow Passage",
-                      """The narrow passage bends here from west to north.
-                      The smell of gold permeates the air.""" ),
+                      ''.join(
+                          ( "The narrow passage bends here from west to north.\n",
+                            "The smell of gold permeates the air." )
+                        ) ),
 
     'treasure': Room( "Treasure Chamber",
-                      """You've found the long-lost treasure chamber!
-                      Sadly, it has already been completely emptied by
-                      earlier adventurers. The only exit is to the south.""" ),
+                      ''.join(
+                          ( "You've found the long-lost treasure chamber! Sadly,\n"
+                            "it has already been completely emptied by earlier\n"
+                            "adventurers. The only exit is to the south." )
+                        ) ),
 }
 
 
@@ -63,8 +70,13 @@ game_running = True
 while game_running:
     current_room = player.get_room()
     
-    print( f'Current room/location: { current_room.capitalize() }' )
-    print( room[ current_room ].get_desc() )
+    print( '---------------------------------------------------' )
+    print( 'Current room/location:'                              )
+    print( room[ current_room ].get_name()                       )
+    print( '---------------------------------------------------' )
+    print( 'Description:'                                        )
+    print( room[ current_room ].get_desc()                       )
+    print( '---------------------------------------------------' )
 
     print( 'game_over' )
     game_running = False

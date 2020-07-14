@@ -9,5 +9,7 @@ class Room:
         self.e_to        = 'invalid'
         self.w_to        = 'invalid'
 
+    def get_name( self ):
+        return self.name
     def get_desc( self ):
         return self.description
