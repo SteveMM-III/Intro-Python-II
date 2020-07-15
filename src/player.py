@@ -5,6 +5,9 @@ class Player:
         self.name         = name
         self.current_room = room
 
+    def get_name( self ):
+        return self.name
+
     def move_to( self, room ):
         self.current_room = room
 
