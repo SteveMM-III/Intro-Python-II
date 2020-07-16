@@ -2,10 +2,15 @@
 # Imports
 from player import Player
 from room   import Room
+from item   import Item, Lantern, Weapon
 
+from colorama import init, Fore, Back, Style
 
 #########################################
 # Setup
+
+# Colorama init
+init()
 
 # Declare all the rooms
 room = {
@@ -17,31 +22,31 @@ room = {
                       "Foyer",
                       ''.join(
                           ( "Dim light filters in from the south. Dusty passages\n"
-                            "run north and east." )
-                        ) ),
+                            "run north and east." ) )
+                ),
 
     'overlook': Room( "overlook",
                       "Grand Overlook",
                       ''.join(
                           ( "A steep cliff appears before you, falling into the\n",
                             "darkness. Ahead to the north, a light flickers in\n",
-                            "the distance, but there is no way across the chasm." )
-                        ) ),
+                            "the distance, but there is no way across the chasm." ) )
+                ),
 
     'narrow':   Room( "narrow",
                       "Narrow Passage",
                       ''.join(
                           ( "The narrow passage bends here from west to north.\n",
-                            "The smell of gold permeates the air." )
-                        ) ),
+                            "The smell of gold permeates the air." ) )
+                ),
 
     'treasure': Room( "treasure",
                       "Treasure Chamber",
                       ''.join(
                           ( "You've found the long-lost treasure chamber! Sadly,\n"
                             "it has already been completely emptied by earlier\n"
-                            "adventurers. The only exit is to the south." )
-                        ) ),
+                            "adventurers. The only exit is to the south." ) )
+                ),
 }
 
 
@@ -56,67 +61,169 @@ room[ 'narrow'   ].n_to = room[ 'treasure' ]
 room[ 'treasure' ].s_to = room[ 'narrow'   ]
 
 
+# Create items
+lamp  = Lantern( 'lantern', 'A magical lantern that glows brightly when held' )
+sword = Weapon( 'sword', 'A normal sword with no special attributes or abilities', 'sword' )
+
+# Add items to rooms
+room[ 'foyer'    ].add_item( lamp  )
+room[ 'overlook' ].add_item( sword )
+
+
 #########################################
 # Functions
 def invalid_option():
-    print( 'Invalid option' )
+    print( f'{Fore.WHITE}[ {Fore.RED}Invalid option{Fore.WHITE} ]' )
 
 
 #######
 def blocked():
-    print( 'Direction blocked! Please try again.' )
+    print( f'{Fore.RED}Direction blocked! Please try again.{Fore.WHITE}' )
+
+#######
+def moving_on():
+    print( f'{Fore.WHITE}[ {Fore.MAGENTA}moving on...   {Style.RESET_ALL}]' )
 
 
 #######
 def process_player_action( player, action ):
-    if action in [ 'n', 's', 'e', 'w' ]:
+    if action in [ 'n', 's', 'e', 'w', 'i', 'l' ]:
         current_room = player.get_room()
 
-        if action == 'n':
+        if   action == 'n':
             try:
                 player.move_to( room[ current_room ].get_n_to().get_name() )
+                print( ''.join( ( f'{Style.BRIGHT}{Fore.YELLOW}',
+                                  f'"You move to the North"{Fore.WHITE}' ) )
+                )
             except:
                 blocked()
         
         elif action == 's':
             try:
                 player.move_to( room[ current_room ].get_s_to().get_name() )
+                print( ''.join( ( f'{Style.BRIGHT}{Fore.YELLOW}',
+                                  f'"You move to the South"{Fore.WHITE}' ) )
+                )
             except:
                 blocked()
         
         elif action == 'e':
             try:
                 player.move_to( room[ current_room ].get_e_to().get_name() )
+                print( ''.join( ( f'{Style.BRIGHT}{Fore.YELLOW}',
+                                  f'"You move to the East"{Fore.WHITE}' ) )
+                )
             except:
                 blocked()
 
         elif action == 'w':
             try:
                 player.move_to( room[ current_room ].get_w_to().get_name() )
+                print( ''.join( ( f'{Style.BRIGHT}{Fore.YELLOW}',
+                                  f'"You move to the West"{Fore.WHITE}' ) )
+                )
             except:
                 blocked()
+        
+        elif action == 'l':
+            current_room = room[ player.get_room() ]
+            items        = current_room.get_items()
 
-    print( 'Action processed' ) # remove after actions worked out
+            print( f'{Style.BRIGHT}{Fore.YELLOW}"You search the area and find the following items:"{Style.NORMAL}')
 
+            for i, itm in enumerate( items ):
+                print( f'{Fore.WHITE}({ i + 1 }) {Fore.CYAN}{ itm.get_name().capitalize() }' )
+            
+            option = input( ''.join( ( f'{Style.RESET_ALL}You may {Fore.WHITE}',
+                                       f'[ {Fore.CYAN}take item_name{Fore.WHITE} ] or ',
+                                       f'[ {Fore.WHITE}({Fore.CYAN}c{Fore.WHITE})ontinue ] \n> {Fore.GREEN}' ) )
+            )
+            option = option.split()
+
+            if len( option ) > 0:
+                if option[ 0 ] == 'c':
+                    moving_on()
+
+                elif len(option) > 1 and option[ 0 ] == 'take':
+                    found = False
+
+                    for i, itm in enumerate( items ):
+                        if itm.get_name() == option[ 1 ].lower():
+                            found = True
+                            itm.on_take()
+                            current_room.remove_item( option[ 1 ] )
+                            player.add_item( itm )
+                            break
+                    
+                    if not found:
+                        print( f'{Fore.WHITE}[ {Fore.MAGENTA}nothing taken {Style.RESET_ALL}]' )
+                else:
+                    invalid_option()
+                    moving_on()
+
+            else:
+                moving_on()
+
+        elif action == 'i':
+            inv          = player.get_items()
+            current_room = room[ player.get_room() ]
+
+            print( f'{Fore.WHITE}[ {Fore.MAGENTA}You have the following items {Style.RESET_ALL}]' )
+
+            for i, itm in enumerate( inv ):
+                print( f'{Fore.WHITE}({ i + 1 }) {Fore.CYAN}{ itm.get_name().capitalize() }' )
+
+            option = input( ''.join( ( f'{Style.RESET_ALL}You may {Fore.WHITE}',
+                                    f'[ {Fore.CYAN}drop item_name{Fore.WHITE} ] or ',
+                                    f'[ {Fore.WHITE}({Fore.CYAN}c{Fore.WHITE})ontinue ] \n> {Fore.GREEN}' ) )
+            )
+            option = option.split()
+
+            if len( option ) > 0:
+                if option[ 0 ] == 'c':
+                    moving_on()
+
+                elif len(option) > 1 and option[ 0 ] == 'drop':
+                    found = False
+
+                    for i, itm in enumerate( inv ):
+                        if itm.get_name() == option[ 1 ].lower():
+                            found = True
+                            itm.on_drop()
+                            current_room.add_item( itm )
+                            player.remove_item( option[ 1 ] )
+                            break
+
+                    if not found:
+                        print( f'{Fore.WHITE}[ {Fore.MAGENTA}nothing dropped {Style.RESET_ALL}]' )
+                
+                else:
+                    invalid_option()
+                    moving_on()
+            else:
+                moving_on()
 
 #######
 def get_player_action( player ):
-    print( 'Actions:  (m)ove, (i)nteract, or (q)uit' )
+    print( ''.join( ( f'[ ({Fore.CYAN}m{Fore.WHITE})ove, ',
+                      f'({Fore.CYAN}i{Fore.WHITE})nventory, ',
+                      f'({Fore.CYAN}l{Fore.WHITE})ook, or ',
+                      f'({Fore.CYAN}q{Fore.WHITE})uit ]' ) )
+    )
 
-    action = input( 'What would you like to do? ' )
+    action = input( f'What would you like to do? \n> {Fore.GREEN}' )
     action = action.lower()
 
-    print( '---------------------------------------------------' )
-
     if action == 'm':
-        print( ''.join( ( 'You have chosen to move.\n',
-                          'Valid directions are (n)orth, (s)outh, (e)ast, or (w)est' )
-                 ) )
+        print( ''.join( ( f'{Fore.WHITE}[ ({Fore.CYAN}n{Fore.WHITE})orth, ',
+                          f'({Fore.CYAN}s{Fore.WHITE})outh, ',
+                          f'({Fore.CYAN}e{Fore.WHITE})ast, or ',
+                          f'({Fore.CYAN}w{Fore.WHITE})est ]' ) )
+        )
 
-        direction = input( 'Which direction would you like to move? ' )
+        direction = input( f'> {Fore.GREEN}' )
         direction = direction.lower()
-
-        print( '---------------------------------------------------' )
 
         if direction not in [ 'n', 's', 'e', 'w' ]:
             invalid_option()
@@ -126,11 +233,32 @@ def get_player_action( player ):
             return True
 
     elif action == 'i':
-        print( 'There are currently no objects to interact with' )
+        inv = player.get_items()
+
+        if len( inv ) > 0:
+            process_player_action( player, 'i' )
+
+        else:
+            print( f'{Fore.WHITE}[ {Fore.MAGENTA}Your inventory is empty {Style.RESET_ALL}]' )
+        
+        return True
+
+    elif action == 'l':
+        current_room = room[ player.get_room() ]
+        items        = current_room.get_items()
+
+        if len( items ) > 0:
+            process_player_action( player, 'l' )
+
+        else:
+            print( f'{Style.BRIGHT}{Fore.YELLOW}"You search the area and find nothing of interest."')
+
         return True
 
     elif action == 'q':
-        print( f'Thanks for playing, { player.get_name() }!' )
+        print( ''.join( ( f'{Fore.WHITE}Thanks for playing ',
+                          f'{Fore.GREEN}{ player.get_name() }!' ) )
+        )
         return False
 
     else:
@@ -142,9 +270,9 @@ def get_player_action( player ):
 # Main
 #########################################
 # Make a new player object that is currently in the 'outside' room.
-print( 'Welcome to Adventure Game!' )
+print( f'{Fore.WHITE}Welcome to Adventure Game!' )
 
-player_name = input( 'Enter a name for your character: ' )
+player_name = input( f'Enter a name for your character: \n> {Fore.GREEN}' )
 
 player = Player( player_name )
 
@@ -165,12 +293,11 @@ game_running = True
 while game_running:
     current_room = player.get_room()
     
-    print( '---------------------------------------------------' )
-    print( 'Current room/location:'                              )
-    print( room[ current_room ].get_common_name()                )
-    print( '---------------------------------------------------' )
-    print( 'Description:'                                        )
-    print( room[ current_room ].get_desc()                       )
-    print( '---------------------------------------------------' )
+    print( ''.join( ( f'{Style.NORMAL}{Fore.WHITE}[ Current Location: ',
+                      f'{Fore.CYAN}{ room[ current_room ].get_common_name() }',
+                      f'{Fore.WHITE} ]' ) )
+    )
+    print( f'{Fore.YELLOW}* { room[ current_room ].get_desc() }{Fore.WHITE}' )
+
     game_running = get_player_action( player )
 #########################################EoF
