@@ -1,16 +1,18 @@
 #########################################
 # Imports
-from player import Player
-from room   import Room
-from item   import Item, Lantern, Weapon
-
+#########################################
+from player   import Player
+from room     import Room
+from item     import Item, Lantern, Weapon
 from colorama import init, Fore, Back, Style
+
 
 #########################################
 # Setup
-
+#########################################
 # Colorama init
 init()
+
 
 # Declare all the rooms
 room = {
@@ -65,6 +67,7 @@ room[ 'treasure' ].s_to = room[ 'narrow'   ]
 lamp  = Lantern( 'lantern', 'A magical lantern that glows brightly when held' )
 sword = Weapon( 'sword', 'A normal sword with no special attributes or abilities', 'sword' )
 
+
 # Add items to rooms
 room[ 'foyer'    ].add_item( lamp  )
 room[ 'overlook' ].add_item( sword )
@@ -72,6 +75,7 @@ room[ 'overlook' ].add_item( sword )
 
 #########################################
 # Functions
+#########################################
 def invalid_option():
     print( f'{Fore.WHITE}[ {Fore.RED}Invalid option{Fore.WHITE} ]' )
 
@@ -204,6 +208,7 @@ def process_player_action( player, action ):
             else:
                 moving_on()
 
+
 #######
 def get_player_action( player ):
     print( ''.join( ( f'[ ({Fore.CYAN}m{Fore.WHITE})ove, ',
@@ -215,7 +220,7 @@ def get_player_action( player ):
     action = input( f'What would you like to do? \n> {Fore.GREEN}' )
     action = action.lower()
 
-    if action == 'm':
+    if   action == 'm':
         print( ''.join( ( f'{Fore.WHITE}[ ({Fore.CYAN}n{Fore.WHITE})orth, ',
                           f'({Fore.CYAN}s{Fore.WHITE})outh, ',
                           f'({Fore.CYAN}e{Fore.WHITE})ast, or ',
