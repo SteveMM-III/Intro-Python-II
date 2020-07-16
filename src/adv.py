@@ -84,6 +84,7 @@ def invalid_option():
 def blocked():
     print( f'{Fore.RED}Direction blocked! Please try again.{Fore.WHITE}' )
 
+
 #######
 def moving_on():
     print( f'{Fore.WHITE}[ {Fore.MAGENTA}moving on...   {Style.RESET_ALL}]' )

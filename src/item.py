@@ -63,18 +63,18 @@ class Weapon( Item ):
         self.__durability = dur
         self.__rarity     = rarity
 
-        def get_style( self ):
+    def get_style( self ):
             return self.__style
 
         
-        def get_damage( self ):
-            return self.__damage
+    def get_damage( self ):
+        return self.__damage
 
-        
-        def get_durability( self ):
-            return self.__durability
+    
+    def get_durability( self ):
+        return self.__durability
 
 
-        def get_rarity( self ):
-            return self.__rarity
+    def get_rarity( self ):
+        return self.__rarity
 #########################################EoF
