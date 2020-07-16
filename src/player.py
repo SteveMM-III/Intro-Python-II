@@ -5,41 +5,41 @@
 #########################################
 class Player:
     def __init__( self, name, room="outside" ):
-        self.name         = name
-        self.current_room = room
-        self.items        = []
-        self.weapon       = 'none'
+        self.__name         = name
+        self.__current_room = room
+        self.__items        = []
+        self.__weapon       = 'none'
 
 
     def get_name( self ):
-        return self.name
+        return self.__name
 
 
     def move_to( self, room ):
-        self.current_room = room
+        self.__current_room = room
 
 
     def get_room( self ):
-        return self.current_room
+        return self.__current_room
 
 
     def add_item( self, item ):
-        self.items.append( item )
+        self.__items.append( item )
         if item.get_name() == 'sword':
-            self.weapon = item
+            self.__weapon = item
 
 
     def remove_item( self, name ):
-        if len( self.items ) > 0:
+        if len( self.__items ) > 0:
             index = 'null'
 
-            for i, itm in enumerate( self.items ):
+            for i, itm in enumerate( self.__items ):
                 if itm.get_name() == name:
                     index = i
                     break
 
             try:
-                del( self.items[ index ] )
+                del( self.__items[ index ] )
                 return True
             except:
                 return False
@@ -48,5 +48,5 @@ class Player:
 
 
     def get_items( self ):
-        return self.items
+        return self.__items
 #########################################EoF

@@ -53,14 +53,14 @@ room = {
 
 
 # Link rooms together
-room[ 'outside'  ].n_to = room[ 'foyer'    ]
-room[ 'foyer'    ].s_to = room[ 'outside'  ]
-room[ 'foyer'    ].n_to = room[ 'overlook' ]
-room[ 'foyer'    ].e_to = room[ 'narrow'   ]
-room[ 'overlook' ].s_to = room[ 'foyer'    ]
-room[ 'narrow'   ].w_to = room[ 'foyer'    ]
-room[ 'narrow'   ].n_to = room[ 'treasure' ]
-room[ 'treasure' ].s_to = room[ 'narrow'   ]
+room[ 'outside'  ].set_n_to( room[ 'foyer'    ] )
+room[ 'foyer'    ].set_s_to( room[ 'outside'  ] )
+room[ 'foyer'    ].set_n_to( room[ 'overlook' ] )
+room[ 'foyer'    ].set_e_to( room[ 'narrow'   ] )
+room[ 'overlook' ].set_s_to( room[ 'foyer'    ] )
+room[ 'narrow'   ].set_w_to( room[ 'foyer'    ] )
+room[ 'narrow'   ].set_n_to( room[ 'treasure' ] )
+room[ 'treasure' ].set_s_to( room[ 'narrow'   ] )
 
 
 # Create items
@@ -137,7 +137,7 @@ def process_player_action( player, action ):
             print( f'{Style.BRIGHT}{Fore.YELLOW}"You search the area and find the following items:"{Style.NORMAL}')
 
             for i, itm in enumerate( items ):
-                print( f'{Fore.WHITE}({ i + 1 }) {Fore.CYAN}{ itm.get_name().capitalize() }' )
+                print( f'{Fore.WHITE}- {Fore.CYAN}{ itm.get_name().capitalize() }' )
             
             option = input( ''.join( ( f'{Style.RESET_ALL}You may {Fore.WHITE}',
                                        f'[ {Fore.CYAN}take item_name{Fore.WHITE} ] or ',
@@ -176,7 +176,7 @@ def process_player_action( player, action ):
             print( f'{Fore.WHITE}[ {Fore.MAGENTA}You have the following items {Style.RESET_ALL}]' )
 
             for i, itm in enumerate( inv ):
-                print( f'{Fore.WHITE}({ i + 1 }) {Fore.CYAN}{ itm.get_name().capitalize() }' )
+                print( f'{Fore.WHITE}- {Fore.CYAN}{ itm.get_name().capitalize() }' )
 
             option = input( ''.join( ( f'{Style.RESET_ALL}You may {Fore.WHITE}',
                                     f'[ {Fore.CYAN}drop item_name{Fore.WHITE} ] or ',
